@@ -2,8 +2,7 @@ package com.networks;
 
 import java.util.Scanner;
 
-public class Main {
-
+public class Client {
 
     public static void main(String[] args) {
 
