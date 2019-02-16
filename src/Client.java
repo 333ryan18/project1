@@ -8,6 +8,7 @@ public class Client
     private Socket socket            = null;
     private DataInputStream  input   = null;
     private DataOutputStream out     = null;
+    private DataInputStream in       = null;
 
     // constructor to put ip address and port 
     public Client(String address, int port)
@@ -17,20 +18,25 @@ public class Client
         {
             socket = new Socket(address, port);
             out    = new DataOutputStream(socket.getOutputStream());
+            in = new DataInputStream(
+                    new BufferedInputStream(socket.getInputStream()));
             System.out.println("Connected");
             
             int selection = 1;
-            String response = null;
+            String response = "";
 
             while (selection > 0 && selection < 7) {
                 selection = displayMenu();
                 switch (selection){
                     case 1 :
-                        System.out.println("Server Date Response: "+response);                        
                         out.writeUTF("Date");
+                        response = in.readUTF();
+                        System.out.println("Server Date Response: " + response);
                         break;
                     case 2 :
-//                    uptime();
+                        out.writeUTF("Uptime");
+                        response = in.readUTF();
+                        System.out.println("Server Uptime Response: " + response + " seconds");
                         break;
                     case 3:
 //                    memoryUse();

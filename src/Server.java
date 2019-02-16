@@ -1,12 +1,18 @@
 import java.net.*;
 import java.io.*;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Server
 {
     //initialize socket and input stream 
     private Socket          socket   = null;
     private ServerSocket    server   = null;
-    private DataInputStream in       =  null;
+    private DataInputStream in       = null;
+    private DataOutputStream out     = null;
 
     // constructor with port 
     public Server(int port)
@@ -26,6 +32,8 @@ public class Server
             in = new DataInputStream(
                     new BufferedInputStream(socket.getInputStream()));
 
+            out = new DataOutputStream(socket.getOutputStream());
+
             String line = "";
 
             // reads message from client until "Over" is sent 
@@ -42,6 +50,14 @@ public class Server
                     System.out.println(i);
                     System.exit(0);
                 }
+                switch (line){
+                    case "Date":
+                        String currentDate = new Date().toString();
+                        out.writeUTF(currentDate);
+                    case "Uptime":
+                        String currentUptime = getSystemUptime();
+                        out.writeUTF(currentUptime);
+                }
             }
             System.out.println("Closing connection");
 
@@ -52,9 +68,15 @@ public class Server
         catch(IOException i)
         {
             System.out.println(i);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
+    public String getSystemUptime() throws Exception {
+        String uptime = new Scanner(new FileInputStream("/proc/uptime")).next();
+        return uptime;
+    }
     public static void main(String args[])
     {
         Server server = new Server(9090);
