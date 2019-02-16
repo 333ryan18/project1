@@ -1,5 +1,3 @@
-
-// A Java program for a Server 
 import java.net.*;
 import java.io.*;
 
@@ -31,7 +29,7 @@ public class Server
             String line = "";
 
             // reads message from client until "Over" is sent 
-            while (!line.equals("Over"))
+            while (!line.equals("Exit"))
             {
                 try
                 {

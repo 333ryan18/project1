@@ -1,5 +1,3 @@
-
-// A Java program for a Client 
 import java.net.*;
 import java.io.*;
 import java.util.Scanner;
@@ -18,16 +16,17 @@ public class Client
         try
         {
             socket = new Socket(address, port);
+            out    = new DataOutputStream(socket.getOutputStream());
             System.out.println("Connected");
+            
             int selection = 1;
+            String response = null;
+
             while (selection > 0 && selection < 7) {
                 selection = displayMenu();
                 switch (selection){
                     case 1 :
-                        System.out.println("Option1");
-//                      String dateSelection = String.valueOf(selection);
-                        // sends output to the socket
-                        out    = new DataOutputStream(socket.getOutputStream());
+                        System.out.println("Server Date Response: "+response);                        
                         out.writeUTF("Date");
                         break;
                     case 2 :
@@ -64,12 +63,7 @@ public class Client
                         break;
                 }
             }
-//
-//            // takes input from terminal
-//            input  = new DataInputStream(System.in);
-//
-//            // sends output to the socket
-//            out    = new DataOutputStream(socket.getOutputStream());
+
         }
         catch(UnknownHostException u)
         {
@@ -79,35 +73,6 @@ public class Client
         {
             System.out.println(i);
         }
-
-        // string to read message from input 
-        String line = "";
-
-//        // keep reading until "Over" is input
-//        while (!line.equals("Over"))
-//        {
-//            try
-//            {
-//                line = input.readLine();
-//                out.writeUTF(line);
-//            }
-//            catch(IOException i)
-//            {
-//                System.out.println(i);
-//            }
-//        }
-
-//        // close the connection
-//        try
-//        {
-//            input.close();
-//            out.close();
-//            socket.close();
-//        }
-//        catch(IOException i)
-//        {
-//            System.out.println(i);
-//        }
     }
 
     private static int displayMenu() {
