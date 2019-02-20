@@ -1,5 +1,6 @@
 import java.net.*;
 import java.io.*;
+import java.text.NumberFormat;
 import java.util.Date;
 import java.util.Scanner;
 
@@ -14,7 +15,7 @@ public class Server
     // constructor with port 
     public Server(int port)
     {
-        // starts server and waits for a connection 
+        // starts server and waits for a connection
         try
         {
             server = new ServerSocket(port);
@@ -25,7 +26,7 @@ public class Server
             socket = server.accept();
             System.out.println("Client accepted");
 
-            // takes input from the client socket 
+            // takes input from the client socket
             in = new DataInputStream(
                     new BufferedInputStream(socket.getInputStream()));
 
@@ -33,7 +34,7 @@ public class Server
 
             String line = "";
 
-            // reads message from client until "Over" is sent 
+            // reads message from client until "Over" is sent
             while (!line.equals("Exit"))
             {
                 try
@@ -54,11 +55,15 @@ public class Server
                     case "Uptime":
                         String currentUptime = getSystemUptime();
                         out.writeUTF(currentUptime);
+                    case "Memory":
+                        StringBuilder memoryUse = getMemoryUse();
+                        System.out.println(memoryUse);
+                        out.writeUTF(String.valueOf(memoryUse));
                 }
             }
             System.out.println("Closing connection");
 
-            // close connection 
+            // close connection
             socket.close();
             in.close();
         }
@@ -74,8 +79,28 @@ public class Server
         String uptime = new Scanner(new FileInputStream("/proc/uptime")).next();
         return uptime;
     }
-    public static void main(String args[]) throws IOException, InterruptedException
+    public StringBuilder getMemoryUse() throws Exception{
+        Runtime runtime = Runtime.getRuntime();
+
+        NumberFormat format = NumberFormat.getInstance();
+
+        StringBuilder sb = new StringBuilder();
+        long maxMemory = runtime.maxMemory();
+        long allocatedMemory = runtime.totalMemory();
+        long freeMemory = runtime.freeMemory();
+
+        sb.append("Free Memory: " + format.format(freeMemory / 1024));
+        sb.append("\n");
+        sb.append("Allocated Memory: " + format.format(allocatedMemory / 1024));
+        sb.append("\n");
+        sb.append("Max Memory: " + format.format(maxMemory / 1024));
+        sb.append("\n");
+        sb.append("Total Free Memory: " + format.format((freeMemory + (maxMemory - allocatedMemory)) / 1024));
+
+        return sb;
+    }
+    public static void main(String args[])
     {
         Server server = new Server(9090);
     }
-} 
+}

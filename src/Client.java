@@ -39,7 +39,9 @@ public class Client
                         System.out.println("Server Uptime Response: " + response + " seconds");
                         break;
                     case 3:
-//                    memoryUse();
+                        out.writeUTF("Memory");
+                        response = in.readUTF();
+                        System.out.println("Server Memory Use Response: " + response);
                         break;
                     case 4:
 //                    netstat();
@@ -54,7 +56,7 @@ public class Client
                         // close the connection
                         try
                         {
-                            input.close();
+//                            input.close();
                             out.close();
                             socket.close();
                         }
@@ -62,6 +64,7 @@ public class Client
                         {
                             System.out.println(i);
                         }
+                        System.out.println("Connection Closed with Server.");
                         System.exit(0);
                         break;
                     default :
