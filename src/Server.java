@@ -1,10 +1,7 @@
 import java.net.*;
 import java.io.*;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Scanner;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class Server
 {
@@ -77,7 +74,7 @@ public class Server
         String uptime = new Scanner(new FileInputStream("/proc/uptime")).next();
         return uptime;
     }
-    public static void main(String args[])
+    public static void main(String args[]) throws IOException, InterruptedException
     {
         Server server = new Server(9090);
     }
