@@ -127,6 +127,10 @@ public class Server
     public static String getNetstat() {
         //
         String cmd = "netstat";
+        return getString(cmd);
+    }
+
+    private static String getString(String cmd) {
         String s;
         String M = "";
         Process p;
@@ -143,6 +147,7 @@ public class Server
 
         return M;
     }
+
     public static String getCurrentUsers() {
         //
         String cmd = "w";
@@ -165,21 +170,7 @@ public class Server
     public static String getCurrentProcesses() {
         //
         String cmd = "ps -e";
-        String s;
-        String message = "";
-        Process p;
-        try{
-            p = Runtime.getRuntime().exec(cmd);
-            BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
-            while((s = br.readLine())!= null){
-                message += s + "\n";
-            }
-            p.destroy();
-        }catch(IOException e){
-            e.printStackTrace();
-        }
-
-        return message;
+        return getString(cmd);
     }
     public static void main(String args[])
     {
