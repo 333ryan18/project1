@@ -6,8 +6,8 @@ public class Client
 {
     // initialize socket and input output streams 
     private Socket socket            = null;
-    private DataOutputStream out     = null;
-    private DataInputStream in       = null;
+    private PrintWriter out     = null;
+    private BufferedReader in       = null;
 
     // constructor to put ip address and port 
     public Client(String address, int port)
@@ -16,9 +16,9 @@ public class Client
         try
         {
             socket = new Socket(address, port);
-            out    = new DataOutputStream(socket.getOutputStream());
-            in = new DataInputStream(
-                    new BufferedInputStream(socket.getInputStream()));
+            out    = new PrintWriter(socket.getOutputStream());
+            in = new BufferedReader(
+                    new InputStreamReader(socket.getInputStream()));
             System.out.println("Connected");
             
             int selection = 1;
@@ -27,37 +27,37 @@ public class Client
                 selection = displayMenu();
                 switch (selection){
                     case 1 :
-                        out.writeUTF("Date");
-                        String dateResponse = in.readUTF();
+                        out.println("Date");
+                        String dateResponse = in.readLine();
                         System.out.println("Server Date Response: " + dateResponse);
                         break;
                     case 2 :
-                        out.writeUTF("Uptime");
-                        String uptimeResponse = in.readUTF();
+                        out.println("Uptime");
+                        String uptimeResponse = in.readLine();
                         System.out.println("Server Uptime Response: " + uptimeResponse + " seconds");
                         break;
                     case 3:
-                        out.writeUTF("Memory");
-                        String memoryResponse = in.readUTF();
+                        out.println("Memory");
+                        String memoryResponse = in.readLine();
                         System.out.println("Server Memory Use Response: " + memoryResponse);
                         break;
                     case 4:
-                        out.writeUTF("Netstat");
-                        String netstatResponse = in.readUTF();
+                        out.println("Netstat");
+                        String netstatResponse = in.readLine();
                         System.out.println("Server Netstat Response: " + netstatResponse);
                         break;
                     case 5:
-                        out.writeUTF("Users");
-                        String usersResponse = in.readUTF();
+                        out.println("Users");
+                        String usersResponse = in.readLine();
                         System.out.println("Server Current Users Response: " + usersResponse);
                         break;
                     case 6:
-                        out.writeUTF("Processes");
-                        String processesResponse = in.readUTF();
+                        out.println("Processes");
+                        String processesResponse = in.readLine();
                         System.out.println("Server Current Processes Response: " + processesResponse);
                         break;
                     case 7:
-                        out.writeUTF("Exit");
+                        out.println("Exit");
                         try
                         {
                             out.close();

@@ -8,17 +8,19 @@ public class Server {
     public static void main(String[] args) throws IOException {
         int portNumber = 9090;
         try {
-            ServerSocket server = new ServerSocket(9090, 100);
+            ServerSocket server = new ServerSocket(9090);
             System.out.println("(Type CTRL+C to end the server program)");
             while (true) {
                 try (
                         Socket client = server.accept();
                         PrintWriter out = new PrintWriter(client.getOutputStream(), true);
                         BufferedReader in = new BufferedReader(new InputStreamReader(client.getInputStream()));
-                ) {
-                    System.out.println("Connection successful with user: " + client.getInetAddress());
-                    String line = in.readLine();
-                    while (!line.equals("Exit")) {
+                )
+                {
+                        System.out.println("Connection successful with user: " + client.getInetAddress());
+                        String line;
+                        line = in.readLine();
+                        System.out.println(line);
                         switch (line) {
                             case "Date":
                                 String currentDate = new Date().toString();
@@ -65,7 +67,7 @@ public class Server {
                         in.close();
                         out.close();
                         client.close();
-                    }
+
                 } catch (IOException i) {
                     System.out.println(i);
                 } catch (Exception e) {
