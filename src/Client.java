@@ -6,7 +6,6 @@ public class Client
 {
     // initialize socket and input output streams 
     private Socket socket            = null;
-    private DataInputStream  input   = null;
     private DataOutputStream out     = null;
     private DataInputStream in       = null;
 
