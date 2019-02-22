@@ -52,13 +52,21 @@ public class Server
                     case "Date":
                         String currentDate = new Date().toString();
                         out.writeUTF(currentDate);
+                        break;
                     case "Uptime":
                         String currentUptime = getSystemUptime();
                         out.writeUTF(currentUptime);
+                        break;
                     case "Memory":
                         StringBuilder memoryUse = getMemoryUse();
                         System.out.println(memoryUse);
                         out.writeUTF(String.valueOf(memoryUse));
+                        break;
+                    case "Netstat":
+                        String netStat = getNetstat();
+                        System.out.println(netStat);
+                        out.writeUTF(netStat);
+                        break;
                 }
             }
             System.out.println("Closing connection");
@@ -98,6 +106,25 @@ public class Server
         sb.append("Total Free Memory: " + format.format((freeMemory + (maxMemory - allocatedMemory)) / 1024));
 
         return sb;
+    }
+    public static String getNetstat() {
+        //
+        String cmd = "netstat";
+        String s;
+        String M = "";
+        Process p;
+        try{
+            p = Runtime.getRuntime().exec(cmd);
+            BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
+            while((s = br.readLine())!= null){
+                M += s +"\n"; //store string
+            }
+            p.destroy();
+        }catch(IOException e){
+            e.printStackTrace();
+        }
+
+        return M;
     }
     public static void main(String args[])
     {

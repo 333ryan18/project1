@@ -44,7 +44,9 @@ public class Client
                         System.out.println("Server Memory Use Response: " + response);
                         break;
                     case 4:
-//                    netstat();
+                        out.writeUTF("Netstat");
+                        response = in.readUTF();
+                        System.out.println("Server Netstat Use Response: " + response);
                         break;
                     case 5:
 //                    currentUsers();
