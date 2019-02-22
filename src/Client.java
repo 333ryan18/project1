@@ -23,40 +23,39 @@ public class Client
             System.out.println("Connected");
             
             int selection = 1;
-            String response = "";
 
             while (selection > 0 && selection < 7) {
                 selection = displayMenu();
                 switch (selection){
                     case 1 :
                         out.writeUTF("Date");
-                        response = in.readUTF();
-                        System.out.println("Server Date Response: " + response);
+                        String dateResponse = in.readUTF();
+                        System.out.println("Server Date Response: " + dateResponse);
                         break;
                     case 2 :
                         out.writeUTF("Uptime");
-                        response = in.readUTF();
-                        System.out.println("Server Uptime Response: " + response + " seconds");
+                        String uptimeResponse = in.readUTF();
+                        System.out.println("Server Uptime Response: " + uptimeResponse + " seconds");
                         break;
                     case 3:
                         out.writeUTF("Memory");
-                        response = in.readUTF();
-                        System.out.println("Server Memory Use Response: " + response);
+                        String memoryResponse = in.readUTF();
+                        System.out.println("Server Memory Use Response: " + memoryResponse);
                         break;
                     case 4:
                         out.writeUTF("Netstat");
-                        response = in.readUTF();
-                        System.out.println("Server Netstat Response: " + response);
+                        String netstatResponse = in.readUTF();
+                        System.out.println("Server Netstat Response: " + netstatResponse);
                         break;
                     case 5:
                         out.writeUTF("Users");
-                        response = in.readUTF();
-                        System.out.println("Server Current Users Response: " + response);
+                        String usersResponse = in.readUTF();
+                        System.out.println("Server Current Users Response: " + usersResponse);
                         break;
                     case 6:
                         out.writeUTF("Processes");
-                        response = in.readUTF();
-                        System.out.println("Server Current Processes Response: " + response);
+                        String processesResponse = in.readUTF();
+                        System.out.println("Server Current Processes Response: " + processesResponse);
                         break;
                     case 7:
                         // close the connection
