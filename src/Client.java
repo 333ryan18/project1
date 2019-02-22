@@ -54,7 +54,9 @@ public class Client
                         System.out.println("Server Current Users Response: " + response);
                         break;
                     case 6:
-//                    processes();
+                        out.writeUTF("Processes");
+                        response = in.readUTF();
+                        System.out.println("Server Current Processes Response: " + response);
                         break;
                     case 7:
                         // close the connection
