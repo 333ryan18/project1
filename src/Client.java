@@ -58,10 +58,9 @@ public class Client
                         System.out.println("Server Current Processes Response: " + processesResponse);
                         break;
                     case 7:
-                        // close the connection
+                        out.writeUTF("Exit");
                         try
                         {
-//                            input.close();
                             out.close();
                             socket.close();
                         }

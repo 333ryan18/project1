@@ -34,7 +34,7 @@ public class Server
 
             String line = "";
 
-            // reads message from client until "Over" is sent
+            // reads message from client until "Exit" is sent
             while (!line.equals("Exit"))
             {
                 try
@@ -52,36 +52,45 @@ public class Server
                     case "Date":
                         String currentDate = new Date().toString();
                         out.writeUTF(currentDate);
+                        out.flush();
                         break;
                     case "Uptime":
                         String currentUptime = getSystemUptime();
                         out.writeUTF(currentUptime);
+                        out.flush();
                         break;
                     case "Memory":
                         StringBuilder memoryUse = getMemoryUse();
                         System.out.println(memoryUse);
                         out.writeUTF(String.valueOf(memoryUse));
+                        out.flush();
                         break;
                     case "Netstat":
                         String netStat = getNetstat();
                         System.out.println(netStat);
                         out.writeUTF(netStat);
+                        out.flush();
                         break;
                     case "Users":
                         String currentUsers = getCurrentUsers();
                         System.out.println(currentUsers);
                         out.writeUTF(currentUsers);
-                    case  "Processes":
+                        out.flush();
+                        break;
+                    case "Processes":
                         String currentProcesses = getCurrentProcesses();
                         System.out.println(currentProcesses);
                         out.writeUTF(currentProcesses);
+                        out.flush();
+                        break;
+                    case "Exit":
+                        System.out.println("Closing connection");
+                        // close connection
+                        socket.close();
+                        in.close();
+                        break;
                 }
             }
-            System.out.println("Closing connection");
-
-            // close connection
-            socket.close();
-            in.close();
         }
         catch(IOException i)
         {
