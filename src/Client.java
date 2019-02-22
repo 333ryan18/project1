@@ -114,8 +114,7 @@ public class Client
         return userInput;
     }
 
-    public static void main(String args[]) throws IOException, InterruptedException
-    {
+    public static void main(String args[]) {
         if (args.length != 1) {
             System.out.println("Hostname of server computer must be supplied");
             return;
