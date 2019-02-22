@@ -72,7 +72,7 @@ public class Server
                         System.out.println(currentUsers);
                         out.writeUTF(currentUsers);
                     case  "Processes":
-                        String currentProcesses = getCurrentProccesses();
+                        String currentProcesses = getCurrentProcesses();
                         System.out.println(currentProcesses);
                         out.writeUTF(currentProcesses);
                 }
@@ -138,39 +138,39 @@ public class Server
         //
         String cmd = "w";
         String s;
-        String M = "";
+        String message = "";
         Process p;
         try{
             p = Runtime.getRuntime().exec(cmd);
             BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
             while((s = br.readLine())!= null){
-                M = s; //store string
+                message = s;
             }
             p.destroy();
         }catch(IOException e){
             e.printStackTrace();
         }
 
-        return M;
+        return message;
     }
-    public static String getCurrentProccesses() {
+    public static String getCurrentProcesses() {
         //
         String cmd = "ps -e";
         String s;
-        String M = "";
+        String message = "";
         Process p;
         try{
             p = Runtime.getRuntime().exec(cmd);
             BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
             while((s = br.readLine())!= null){
-                M += s + "\n"; //store string
+                message += s + "\n";
             }
             p.destroy();
         }catch(IOException e){
             e.printStackTrace();
         }
 
-        return M;
+        return message;
     }
     public static void main(String args[])
     {
