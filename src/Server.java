@@ -67,6 +67,10 @@ public class Server
                         System.out.println(netStat);
                         out.writeUTF(netStat);
                         break;
+                    case "Users":
+                        String currentUsers = getCurrentUsers();
+                        System.out.println(currentUsers);
+                        out.writeUTF(currentUsers);
                 }
             }
             System.out.println("Closing connection");
@@ -118,6 +122,25 @@ public class Server
             BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
             while((s = br.readLine())!= null){
                 M += s +"\n"; //store string
+            }
+            p.destroy();
+        }catch(IOException e){
+            e.printStackTrace();
+        }
+
+        return M;
+    }
+    public static String getCurrentUsers() {
+        //
+        String cmd = "w";
+        String s;
+        String M = "";
+        Process p;
+        try{
+            p = Runtime.getRuntime().exec(cmd);
+            BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
+            while((s = br.readLine())!= null){
+                M = s; //store string
             }
             p.destroy();
         }catch(IOException e){

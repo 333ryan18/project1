@@ -46,10 +46,12 @@ public class Client
                     case 4:
                         out.writeUTF("Netstat");
                         response = in.readUTF();
-                        System.out.println("Server Netstat Use Response: " + response);
+                        System.out.println("Server Netstat Response: " + response);
                         break;
                     case 5:
-//                    currentUsers();
+                        out.writeUTF("Users");
+                        response = in.readUTF();
+                        System.out.println("Server Current Users Response: " + response);
                         break;
                     case 6:
 //                    processes();
