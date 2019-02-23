@@ -19,7 +19,7 @@ class ClientThread extends Thread{
     static ArrayList<Long> times = new ArrayList<Long>();
     long reqTime;
 
-    //Client Thread Constuctor
+    //Client Thread Constructor
     ClientThread(String hostName, int portNumber, int option, int i){
         try{
             this.clientSocket = new Socket(hostName, portNumber);
@@ -140,7 +140,7 @@ public class Client{
             //join after all threads have started so that the program waits for all of them to finish
             for (int k = 0; k < clients; k++){
                 try{
-                    threads[k].join();
+                    threads[k].join(500);
                 }catch (InterruptedException ie){
                     System.out.println(ie.getMessage());
                 }

@@ -8,7 +8,7 @@ public class Server {
     public static void main(String[] args) throws IOException {
         int portNumber = 9090;
         try {
-            ServerSocket server = new ServerSocket(9090);
+            ServerSocket server = new ServerSocket(9090 ,100);
             System.out.println("(Type CTRL+C to end the server program)");
             while (true) {
                 try (
@@ -18,66 +18,50 @@ public class Server {
                 )
                 {
                         System.out.println("Connection successful with user: " + client.getInetAddress());
-                        String line;
-                        line = in.readLine();
-                        int selection = Integer.valueOf(line.charAt(0));
-                        System.out.println(selection);
+                        String line = in.readLine();
+                        int selection = line.charAt(0);
                         switch (selection) {
                             case 49:
                                 String currentDate = new Date().toString();
-                                System.out.println(currentDate);
                                 out.println(currentDate);
-//                                out.flush();
                                 break;
                             case 50:
                                 String currentUptime = getSystemUptime();
                                 out.println(currentUptime + " seconds");
-//                                out.flush();
                                 break;
                             case 51:
                                 StringBuilder memoryUse = getMemoryUse();
-                                System.out.println(memoryUse);
                                 out.println(memoryUse);
-//                                out.flush();
                                 break;
                             case 52:
                                 String netStat = getNetstat();
-                                System.out.println(netStat);
                                 out.println(netStat);
-//                                out.flush();
                                 break;
                             case 53:
                                 String currentUsers = getCurrentUsers();
-                                System.out.println(currentUsers);
                                 out.println(currentUsers);
-//                                out.flush();
                                 break;
                             case 54:
                                 String currentProcesses = getCurrentProcesses();
-                                System.out.println(currentProcesses);
                                 out.println(currentProcesses);
-//                                out.flush();
                                 break;
                             case 55:
-                                System.out.println("Closing connection");
-                                // close connection
-                                client.close();
-                                in.close();
                                 break;
-                        }
-                        System.out.println("Closing connection for user " + client.getInetAddress());
-                        in.close();
-                        out.close();
-                        client.close();
-
-                } catch (IOException i) {
-                    System.out.println(i);
+                        }//end of switch statement for requests
+                    //close IO and the client socket
+                    System.out.println("Closing connection for user " + client.getInetAddress());
+                    in.close();
+                    out.close();
+                    client.close();
+                } catch (IOException e) {
+                    System.out.println("Exception caught when handling a connection.");
+                    System.out.println(e.getMessage());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-            }
-        }
-        catch(IOException e) {
+                System.out.println("Waiting for next connection...");
+            }//end of server loop
+        } catch(IOException e) {
             System.out.println("Exception caught when trying to listen on port " + portNumber);
             System.out.println(e.getMessage());
         }
