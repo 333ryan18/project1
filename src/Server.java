@@ -20,44 +20,44 @@ public class Server {
                         System.out.println("Connection successful with user: " + client.getInetAddress());
                         String line;
                         line = in.readLine();
-                        System.out.println(line);
-                        switch (line) {
-                            case "1":
+                        int selection = line.charAt(0);
+                        switch (selection) {
+                            case 49:
                                 String currentDate = new Date().toString();
                                 System.out.println(currentDate);
                                 out.println(currentDate);
 //                                out.flush();
                                 break;
-                            case "2":
+                            case 50:
                                 String currentUptime = getSystemUptime();
                                 out.println(currentUptime + " seconds");
 //                                out.flush();
                                 break;
-                            case "3":
+                            case 51:
                                 StringBuilder memoryUse = getMemoryUse();
                                 System.out.println(memoryUse);
                                 out.println(memoryUse);
 //                                out.flush();
                                 break;
-                            case "4":
+                            case 52:
                                 String netStat = getNetstat();
                                 System.out.println(netStat);
                                 out.println(netStat);
 //                                out.flush();
                                 break;
-                            case "5":
+                            case 53:
                                 String currentUsers = getCurrentUsers();
                                 System.out.println(currentUsers);
                                 out.println(currentUsers);
 //                                out.flush();
                                 break;
-                            case "6":
+                            case 54:
                                 String currentProcesses = getCurrentProcesses();
                                 System.out.println(currentProcesses);
                                 out.println(currentProcesses);
 //                                out.flush();
                                 break;
-                            case "7":
+                            case 55:
                                 System.out.println("Closing connection");
                                 // close connection
                                 client.close();
