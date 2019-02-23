@@ -20,7 +20,8 @@ public class Server {
                         System.out.println("Connection successful with user: " + client.getInetAddress());
                         String line;
                         line = in.readLine();
-                        int selection = line.charAt(0);
+                        int selection = Integer.valueOf(line.charAt(0));
+                        System.out.println(selection);
                         switch (selection) {
                             case 49:
                                 String currentDate = new Date().toString();
