@@ -1,125 +1,159 @@
-import java.net.*;
-import java.io.*;
 import java.util.Scanner;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.net.Socket;
+import java.net.UnknownHostException;
+import java.util.ArrayList;
 
-public class Client
-{
-    // initialize socket and input output streams 
-    private Socket socket            = null;
-    private PrintWriter out     = null;
-    private BufferedReader in       = null;
+class ClientThread extends Thread{
+    //IO and attributes for each thread
+    Socket clientSocket;
+    PrintWriter out;
+    BufferedReader in;
+    int option;
+    int reqNum;
 
-    // constructor to put ip address and port 
-    public Client(String address, int port)
-    {
-        // establish a connection 
-        try
-        {
-            socket = new Socket(address, port);
-            out    = new PrintWriter(socket.getOutputStream(), true);
-            in = new BufferedReader(
-                    new InputStreamReader(socket.getInputStream()));
-            System.out.println("Connected");
-            
-            int selection = displayMenu();
+    //Time attributes
+    static ArrayList<Long> times = new ArrayList<Long>();
+    long reqTime;
 
-            while (selection > 0 && selection < 7) {
-                selection = displayMenu();
-                switch (selection){
-                    case 1 :
-                        String date = "Date";
-                        out.println(date);
-                        String dateResponse = in.readLine();
-                        System.out.println("Server Date Response: " + dateResponse);
-                        break;
-                    case 2 :
-                        out.write("Uptime");
-                        String uptimeResponse = in.readLine();
-                        System.out.println("Server Uptime Response: " + uptimeResponse + " seconds");
-                        break;
-                    case 3:
-                        out.write("Memory");
-                        String memoryResponse = in.readLine();
-                        System.out.println("Server Memory Use Response: " + memoryResponse);
-                        break;
-                    case 4:
-                        out.write("Netstat");
-                        String netstatResponse = in.readLine();
-                        System.out.println("Server Netstat Response: " + netstatResponse);
-                        break;
-                    case 5:
-                        out.write("Users");
-                        String usersResponse = in.readLine();
-                        System.out.println("Server Current Users Response: " + usersResponse);
-                        break;
-                    case 6:
-                        out.write("Processes");
-                        String processesResponse = in.readLine();
-                        System.out.println("Server Current Processes Response: " + processesResponse);
-                        break;
-                    case 7:
-                        out.write("Exit");
-                        try
-                        {
-                            out.close();
-                            socket.close();
-                        }
-                        catch(IOException i)
-                        {
-                            System.out.println(i);
-                        }
-                        System.out.println("Connection Closed with Server.");
-                        System.exit(0);
-                        break;
-                    default :
-                        displayMenu();
-                        break;
+    //Client Thread Constuctor
+    ClientThread(String hostName, int portNumber, int option, int i){
+        try{
+            this.clientSocket = new Socket(hostName, portNumber);
+            this.out = new PrintWriter(clientSocket.getOutputStream(), true);
+            this.in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+            this.option = option;
+            this.reqNum = i;
+            this.reqTime = 0;
+        }catch (UnknownHostException e){
+            System.err.println("Dont know about host " + hostName);
+            System.exit(1);
+        }catch (IOException e){
+            System.err.println("Couldn't get I/O for the connection to " + hostName);
+            System.exit(1);
+        }
+    }
+
+    //The code that the threads execute when started
+    public void run(){
+        String response;
+        long startTime = System.currentTimeMillis();
+        out.println(this.option); //menu option sent to server
+        //Receive the server's response
+        try{
+            while ((response = in.readLine()) != null){
+                //Uncomment the below print statement to view the data on your screen
+//                response = null;
+                System.out.println(response); //reading from socket
+            }
+            this.in.close();
+            this.out.close();
+            this.clientSocket.close();
+        }catch (IOException e){
+            System.err.println("I/O error with the connection");
+            System.exit(1);
+        }
+        //calculate the time it took and add it to the times list
+        this.reqTime = (System.currentTimeMillis() - startTime);
+        times.add(this.reqTime);
+    }
+}
+
+public class Client{
+    public static void main(String[] args) {
+        //check that necessary info is provided
+        if (args.length != 1){
+            System.out.println("Must use format: 'java Client [Hostname]'\nExiting Program.....");
+            System.exit(1);
+        }
+        String hostName = args[0];
+        int portNumber = 9090;
+
+        Scanner sc = new Scanner(System.in);
+        int selection;
+        int clients;
+        //array for the client threads
+        ClientThread[] threads = new ClientThread[100];
+
+        do{
+            //menu
+            System.out.println("1 - Host Current Date/Time");
+            System.out.println("2 - Host Uptime");
+            System.out.println("3 - Host Memory Use");
+            System.out.println("4 - Host Netstat");
+            System.out.println("5 - Host Current Users");
+            System.out.println("6 - Host Running Processes");
+            System.out.println("7 - Exit");
+            System.out.println("Enter one of the above commands:");
+
+            selection = sc.next().charAt(0);
+            while (selection > 0 && selection < 7){
+                System.out.println("Please enter a number between 1 - 7");
+                selection = sc.next().charAt(0);
+            }
+            clients = 1;
+
+            switch (selection){
+                case 49: //1, ASCII Value
+                    System.out.println("How many clients are you testing for?");
+                    clients = sc.nextInt();
+                    selection = 1;
+                    break;
+                case 50: //2
+                    selection = 2;
+                    break;
+                case 51: //3
+                    selection = 3;
+                    break;
+                case 52: //4
+                    System.out.println("How many clients are you testing for?");
+                    clients = sc.nextInt();
+                    selection = 4;
+                    break;
+                case 53: //5
+                    selection = 5;
+                    break;
+                case 54: //6
+                    selection = 6;
+                    break;
+                case 55: //7
+                    System.out.println("Closing Connection with Server...");
+                    selection = 7;
+                    break;
+                default:
+                    System.out.println("INPUT ERROR: Your input must be a value between 1 - 7.\n");
+            }//end switch
+            System.out.println("Clients " + clients);
+
+            //create the threads
+            for (int i = 0;i < clients;i++){
+                threads[i] = new ClientThread(hostName, portNumber, selection, i);
+            }
+            //start the threads
+            for (int j = 0;j < clients;j++){
+                threads[j].start();
+            }
+
+            //join after all threads have started so that the program waits for all of them to finish
+            for (int k = 0; k < clients; k++){
+                try{
+                    threads[k].join();
+                }catch (InterruptedException ie){
+                    System.out.println(ie.getMessage());
                 }
             }
-
-        }
-        catch(UnknownHostException u)
-        {
-            System.out.println(u);
-        }
-        catch(IOException i)
-        {
-            System.out.println(i);
-        }
-    }
-
-    private static int displayMenu() {
-
-        int userInput;
-        try {
-            System.out.println("Please Choose an Option:\n");
-            System.out.println("1.\tHost current Date and Time");
-            System.out.println("2.\tHost uptime");
-            System.out.println("3.\tHost memory use");
-            System.out.println("4.\tHost Netstat");
-            System.out.println("5.\tHost current users");
-            System.out.println("6.\tHost running processes");
-            System.out.println("7.\tQuit");
-            System.out.print("\nEnter your selection number:\n");
-
-            Scanner scan = new Scanner(System.in);
-            userInput = scan.nextInt();
-            if (userInput < 1 || userInput > 7) {
-                System.out.println("Choice not Valid.");
-                userInput = displayMenu();
+            //calculate the average server response time
+            long sumOfTimes = 0;
+            for(long x: ClientThread.times){
+                sumOfTimes += x;
             }
-        } catch (Exception ex) {
-            System.out.println("Choice not Valid.");
-            userInput = displayMenu();
-        }
-        return userInput;
-    }
-
-    public static void main(String args[]) {
-        if (args.length != 1) {
-            System.out.println("Hostname of server computer must be supplied");
-            return;
-        }
-        Client client = new Client(args[0], 9090);
-    }
-} 
+            double avgTime = sumOfTimes / (double)clients;
+            ClientThread.times.clear();
+            System.out.println("Average time of response = " + avgTime + "ms\n");
+        }while (selection != 7);
+        System.exit(1);
+    }//end main
+}

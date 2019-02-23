@@ -22,42 +22,42 @@ public class Server {
                         line = in.readLine();
                         System.out.println(line);
                         switch (line) {
-                            case "Date":
+                            case "1":
                                 String currentDate = new Date().toString();
                                 System.out.println(currentDate);
                                 out.println(currentDate);
 //                                out.flush();
                                 break;
-                            case "Uptime":
+                            case "2":
                                 String currentUptime = getSystemUptime();
-                                out.println(currentUptime);
+                                out.println(currentUptime + " seconds");
 //                                out.flush();
                                 break;
-                            case "Memory":
+                            case "3":
                                 StringBuilder memoryUse = getMemoryUse();
                                 System.out.println(memoryUse);
                                 out.println(memoryUse);
 //                                out.flush();
                                 break;
-                            case "Netstat":
+                            case "4":
                                 String netStat = getNetstat();
                                 System.out.println(netStat);
                                 out.println(netStat);
 //                                out.flush();
                                 break;
-                            case "Users":
+                            case "5":
                                 String currentUsers = getCurrentUsers();
                                 System.out.println(currentUsers);
                                 out.println(currentUsers);
 //                                out.flush();
                                 break;
-                            case "Processes":
+                            case "6":
                                 String currentProcesses = getCurrentProcesses();
                                 System.out.println(currentProcesses);
                                 out.println(currentProcesses);
 //                                out.flush();
                                 break;
-                            case "Exit":
+                            case "7":
                                 System.out.println("Closing connection");
                                 // close connection
                                 client.close();
