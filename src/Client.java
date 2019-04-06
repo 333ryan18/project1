@@ -44,6 +44,10 @@ class ClientThread extends Thread{
         out.println(this.option); //menu option sent to server
         //Receive the server's response
         try{
+        	if((response = in.readLine()) != null) {
+        		this.reqTime = (System.currentTimeMillis() - startTime);
+                times.add(this.reqTime);
+        	}
             while ((response = in.readLine()) != null){
                 //Uncomment the below print statement to view the data on your screen
 //                response = null;
@@ -57,8 +61,7 @@ class ClientThread extends Thread{
             System.exit(1);
         }
         //calculate the time it took and add it to the times list
-        this.reqTime = (System.currentTimeMillis() - startTime);
-        times.add(this.reqTime);
+        
     }
 }
 
