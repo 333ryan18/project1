@@ -45,10 +45,10 @@ class ClientThread extends Thread{
         //Receive the server's response
         try{
             while ((response = in.readLine()) != null){
-                //Uncomment the below print statement to view the data on your screen
-//                response = null;
                 System.out.println(response); //reading from socket
             }
+            this.reqTime = (System.currentTimeMillis() - startTime);
+            times.add(this.reqTime);
             this.in.close();
             this.out.close();
             this.clientSocket.close();
@@ -57,8 +57,7 @@ class ClientThread extends Thread{
             System.exit(1);
         }
         //calculate the time it took and add it to the times list
-        this.reqTime = (System.currentTimeMillis() - startTime);
-        times.add(this.reqTime);
+
     }
 }
 
