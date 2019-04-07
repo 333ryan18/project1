@@ -52,9 +52,11 @@ class ServerThread{
                     out.println(currentProcesses);
                     break;
                 case 55:
+                    String clientIP = client.getRemoteSocketAddress().toString();
+                    System.out.println("Connection Closed with Client (" + clientIP + ").");
+                    out.flush();
                     break;
             }//end switch
-            //System.out.println("Closing connection for user " + client.getInetAddress());
             in.close();
             out.close();
             client.close();
