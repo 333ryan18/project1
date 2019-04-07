@@ -4,68 +4,67 @@ import java.text.NumberFormat;
 import java.util.Date;
 import java.util.Scanner;
 
-public class ConcurrentProcessServer {
-    public static void main(String[] args) throws IOException {
-        int portNumber = 9090;
-        try {
-            ServerSocket server = new ServerSocket(9090 ,100);
-            System.out.println("(Type CTRL+C to end the server program)");
-            while (true) {
-                try (
-                        Socket client = server.accept();
-                        PrintWriter out = new PrintWriter(client.getOutputStream(), true);
-                        BufferedReader in = new BufferedReader(new InputStreamReader(client.getInputStream()));
-                )
-                {
-                    System.out.println("Connection successful with user: " + client.getInetAddress());
-                    String line = in.readLine();
-                    int selection = line.charAt(0);
-                    switch (selection) {
-                        case 49:
-                            String currentDate = new Date().toString();
-                            out.println(currentDate);
-                            break;
-                        case 50:
-                            String currentUptime = getSystemUptime();
-                            out.println(currentUptime + " seconds");
-                            break;
-                        case 51:
-                            StringBuilder memoryUse = getMemoryUse();
-                            out.println(memoryUse);
-                            break;
-                        case 52:
-                            String netStat = getNetstat();
-                            out.println(netStat);
-                            break;
-                        case 53:
-                            String currentUsers = getCurrentUsers();
-                            out.println(currentUsers);
-                            break;
-                        case 54:
-                            String currentProcesses = getCurrentProcesses();
-                            out.println(currentProcesses);
-                            break;
-                        case 55:
-                            break;
-                    }//end of switch statement for requests
-                    //close IO and the client socket
-                    System.out.println("Closing connection for user " + client.getInetAddress());
-                    in.close();
-                    out.close();
-                    client.close();
-                } catch (IOException e) {
-                    System.out.println("Exception caught when handling a connection.");
-                    System.out.println(e.getMessage());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                System.out.println("Waiting for next connection...");
-            }//end of server loop
-        } catch(IOException e) {
-            System.out.println("Exception caught when trying to listen on port " + portNumber);
-            System.out.println(e.getMessage());
+//----------------------------------------------------------------------------------------------
+//proposed ServerThread object
+class ServerThread{
+    PrintWriter out;
+    BufferedReader in;
+    Socket client;
+
+
+    public ServerThread(Socket client)throws IOException{
+        try{
+            this.client = client;
+            this.out = new PrintWriter(client.getOutputStream(), true);
+            this.in = new BufferedReader(new InputStreamReader(client.getInputStream()));
+        }catch(IOException e){
+            e.printStackTrace();
         }
     }
+
+    public void run(){
+        try{
+            String line = in.readLine();
+            int selection = line.charAt(0);
+            switch (selection) {
+                case 49:
+                    String currentDate = new Date().toString();
+                    out.println(currentDate);
+                    break;
+                case 50:
+                    String currentUptime = getSystemUptime();
+                    out.println(currentUptime + " seconds");
+                    break;
+                case 51:
+                    StringBuilder memoryUse = getMemoryUse();
+                    out.println(memoryUse);
+                    break;
+                case 52:
+                    String netStat = getNetstat();
+                    out.println(netStat);
+                    break;
+                case 53:
+                    String currentUsers = getCurrentUsers();
+                    out.println(currentUsers);
+                    break;
+                case 54:
+                    String currentProcesses = getCurrentProcesses();
+                    out.println(currentProcesses);
+                    break;
+                case 55:
+                    break;
+            }//end switch
+            //System.out.println("Closing connection for user " + client.getInetAddress());
+            in.close();
+            out.close();
+            client.close();
+        }catch (IOException e) {
+            System.out.println("Exception caught when handling a connection.");
+            System.out.println(e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }//end run
 
     public static String getSystemUptime () throws Exception {
         String uptime = new Scanner(new FileInputStream("/proc/uptime")).next();
@@ -91,6 +90,7 @@ public class ConcurrentProcessServer {
 
         return sb;
     }
+
     public static String getNetstat () {
         //
         String cmd = "netstat";
@@ -134,9 +134,32 @@ public class ConcurrentProcessServer {
 
         return message;
     }
+
     public static String getCurrentProcesses () {
         //
         String cmd = "ps -e";
         return getString(cmd);
+    }
+    //all of the other methods here. Will method output/architecture need to be changed in any way?
+}
+
+public class ConcurrentProcessServer {
+    public static void main(String[] args) throws IOException {
+
+        try(//moved some things together to try and consolidate IOException risks
+            ServerSocket server = new ServerSocket(9090,100);
+
+        ){
+            while(true){
+                try{
+                    //accept new clients and run threads
+                    ServerThread client = new ServerThread(server.accept());
+                    client.run();
+
+                }catch(IOException e){//catch for server.accept
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 }
